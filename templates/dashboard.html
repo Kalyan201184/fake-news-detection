@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="navbar">
+    <h2>Dashboard</h2>
+
+    <div>
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="dashboard">
+    <div class="dashboard-card">
+        <h2>Welcome {{ session['user'] }}</h2>
+        <p>Fake News Detection System Dashboard</p>
+    </div>
+</div>
+
+</body>
+</html>

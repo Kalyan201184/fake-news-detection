@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="result-container">
+    <div class="result-card">
+        <h1>{{ result }}</h1>
+
+        <h3>Confidence: {{ confidence }}</h3>
+
+        <p>{{ text }}</p>
+
+        <a href="/">Analyze Another News</a>
+    </div>
+</div>
+
+</body>
+</html>
