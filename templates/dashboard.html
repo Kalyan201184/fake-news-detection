@@ -7,18 +7,41 @@
 <body>
 
 <div class="navbar">
-    <h2>Dashboard</h2>
-
+    <h2>Fake News Detection</h2>
     <div>
         <a href="/">Home</a>
         <a href="/logout">Logout</a>
     </div>
 </div>
 
-<div class="dashboard">
+<div class="dashboard-container">
     <div class="dashboard-card">
-        <h2>Welcome {{ session['user'] }}</h2>
-        <p>Fake News Detection System Dashboard</p>
+        <h1>Welcome {{ session['user_name'] }}</h1>
+        <p>Analyze news articles and detect fake or misleading information.</p>
+
+        <form action="/analyze" method="POST">
+            <textarea
+                name="news"
+                rows="10"
+                placeholder="Paste news article here..."
+                required></textarea>
+            <button type="submit">Analyze News</button>
+        </form>
+    </div>
+
+    <div class="history-card">
+        <h2>Recent Analysis History</h2>
+        {% if history %}
+            {% for item in history %}
+                <div class="history-item">
+                    <p><strong>{{ item['result'] }}</strong> - {{ item['confidence'] }}</p>
+                    <p>{{ item['news'] }}</p>
+                    <small>{{ item['created_at'] }}</small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No analysis history yet.</p>
+        {% endif %}
     </div>
 </div>
 

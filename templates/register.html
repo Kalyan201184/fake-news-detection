@@ -1,29 +1,65 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <header class="hero auth-hero">
+        <div class="hero-brand">
+            <div class="logo">Fake News Detector</div>
+        </div>
+        <nav class="hero-nav">
+            <a href="/">Home</a>
+            <a href="/login" class="button-secondary">Login</a>
+        </nav>
+    </header>
 
-<div class="auth-container">
-    <div class="auth-card">
-        <h2>Register</h2>
+    <main class="auth-main">
+        <div class="auth-card auth-card-large">
+            <div class="auth-panel">
+                <div class="auth-copy">
+                    <h1>Create your account</h1>
+                    <p>Register to access the full analytics experience and save your progress.</p>
+                    <ul>
+                        <li>Professional interface</li>
+                        <li>Fast account setup</li>
+                        <li>Ready for your project</li>
+                    </ul>
+                </div>
+                <div class="auth-form">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="flash flash-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
 
-        <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-
-            <button type="submit">Register</button>
-        </form>
-
-        <p>
-            Already have account?
-            <a href="/login">Login</a>
-        </p>
-    </div>
-</div>
-
+                    <h2>Register your account</h2>
+                    <form method="POST">
+                        <label>
+                            Username
+                            <input type="text" name="username" placeholder="Your name" required>
+                        </label>
+                        <label>
+                            Email
+                            <input type="email" name="email" placeholder="you@example.com" required>
+                        </label>
+                        <label>
+                            Password
+                            <input type="password" name="password" placeholder="Create a password" required>
+                        </label>
+                        <button type="submit">Register</button>
+                    </form>
+                    <p class="auth-footer">
+                        Already have an account? <a href="/login">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
