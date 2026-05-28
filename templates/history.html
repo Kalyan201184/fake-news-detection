@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analysis History | Fake News Detector</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <main class="container">
+        <header class="hero">
+            <div class="hero-text">
+                <h1>Your analysis history</h1>
+                <p>Review the news articles you've analyzed and track your latest detections over time.</p>
+                <div class="hero-actions">
+                    <a href="/" class="button-primary">Analyze New News</a>
+                    <a href="/logout" class="button-secondary">Logout</a>
+                </div>
+            </div>
+        </header>
+
+        <section class="results" style="margin-top: 2rem;">
+            {% if history and history | length > 0 %}
+                {% for item in history %}
+                    <div class="result-card">
+                        <div class="result-card-content">
+                            <div class="tag {{ 'fake' if item['result'] == 'Fake' else 'real' }}">{{ item['result'] }}</div>
+                            <h2>{{ item['created_at'] }}</h2>
+                            <p><strong>Confidence:</strong> {{ item['confidence'] }}</p>
+                            <p><strong>Reason:</strong> {{ item['reason'] }}</p>
+                            <p><strong>Text analyzed:</strong></p>
+                            <div class="result-text">{{ item['news'] }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="recent-activity">
+                    <h2>No history yet</h2>
+                    <p>Analyze some news articles first, and your results will be saved here.</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

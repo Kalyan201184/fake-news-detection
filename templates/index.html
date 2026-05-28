@@ -1,37 +1,99 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fake News Detection</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <header class="hero">
+        <div class="hero-brand">
+            <div class="logo">Fake News Detector</div>
+            <p class="hero-tagline">Professional fake news analysis for your mini project.</p>
+        </div>
 
-<div class="navbar">
-    <h2>Fake News Detection System</h2>
+        <nav class="hero-nav">
+            <a href="#how-it-works">How it works</a>
+            <a href="#analyze">Analyze</a>
+            {% if user_name %}
+                <span class="nav-user">Hello, {{ user_name }}</span>
+                <a href="/history" class="button-secondary">History</a>
+                <a href="/logout" class="button-secondary">Logout</a>
+            {% else %}
+                <a href="/login" class="button-secondary">Login</a>
+                <a href="/register" class="button-secondary">Register</a>
+            {% endif %}
+        </nav>
+    </header>
 
-    <div>
-        <a href="/">Home</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    </div>
-</div>
+    <main>
+        <section class="intro">
+            <div class="intro-copy">
+                <h1>Beautiful, powerful fake news detection.</h1>
+                <p>Analyze headlines and articles with an intelligent keyword-based model that highlights red flags and trusted cues.</p>
+                <div class="hero-actions">
+                    <a href="#analyze" class="primary-button">Analyze Now</a>
+                    <a href="/register" class="button-secondary">Create Account</a>
+                </div>
+            </div>
+            <div class="intro-panel">
+                <div class="panel-card">
+                    <h3>Why use this site?</h3>
+                    <ul>
+                        <li>Modern professional UI</li>
+                        <li>Login/register flow included</li>
+                        <li>Quick fake news detection</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-<div class="container">
-    <div class="card">
-        <h1>Real-Time Fake News Detection</h1>
+        <section id="analyze" class="analyze-section">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Analyze News Text</h2>
+                        <p>Paste the article or headline below and receive a classification instantly.</p>
+                    </div>
+                    {% if user_name %}
+                        <span class="badge">Logged in as {{ user_name }}</span>
+                    {% else %}
+                        <span class="badge">Guest mode</span>
+                    {% endif %}
+                </div>
 
-        <form action="/analyze" method="POST">
-            <textarea
-                name="news"
-                rows="10"
-                placeholder="Paste news article here..."
-                required>
-            </textarea>
+                {% if error %}
+                    <div class="alert">{{ error }}</div>
+                {% endif %}
 
-            <button type="submit">Analyze News</button>
-        </form>
-    </div>
-</div>
+                <form method="POST">
+                    <textarea name="news" rows="10" placeholder="Paste news text here..." required></textarea>
+                    <button type="submit">Detect Fake News</button>
+                </form>
+            </div>
+        </section>
 
+        <section id="how-it-works" class="info-section">
+            <div class="info-card">
+                <h2>How it works</h2>
+                <p>This website uses a keyword-based classifier to identify sensational language and informative cues.</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Sensational detection</h3>
+                        <p>Looks for trigger words often used in fake news.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Trusted signals</h3>
+                        <p>Looks for factual wording and authoritative language.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Result summary</h3>
+                        <p>Shows a clean result with confidence and explanation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

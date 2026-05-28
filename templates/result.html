@@ -1,22 +1,56 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Result</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Result</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <header class="hero result-hero">
+        <div class="hero-brand">
+            <div class="logo">Fake News Detector</div>
+        </div>
+        <nav class="hero-nav">
+            <a href="/">Analyze again</a>
+            {% if user_name %}
+                <a href="/history" class="button-secondary">History</a>
+                <a href="/logout" class="button-secondary">Logout</a>
+            {% else %}
+                <a href="/login" class="button-secondary">Login</a>
+            {% endif %}
+        </nav>
+    </header>
 
-<div class="result-container">
-    <div class="result-card">
-        <h1>{{ result }}</h1>
+    <main class="result-main">
+        <div class="result-card">
+            <h1>{{ result }}</h1>
+            <p class="confidence">Confidence: {{ confidence }}</p>
+            <p class="reason">{{ reason }}</p>
 
-        <h3>Confidence: {{ confidence }}</h3>
+            {% if matched_keywords %}
+            <div class="keywords">
+                <h3>Matched keywords</h3>
+                <ul>
+                    {% for word in matched_keywords %}
+                        <li>{{ word }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
 
-        <p>{{ text }}</p>
+            <div class="text-preview">
+                <h3>Submitted text</h3>
+                <p>{{ text }}</p>
+            </div>
 
-        <a href="/">Analyze Another News</a>
-    </div>
-</div>
-
+            <div class="result-actions">
+                <a class="primary-button" href="/">Analyze another text</a>
+                {% if user_name %}
+                    <span class="nav-user">Logged in as {{ user_name }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </main>
 </body>
 </html>
