@@ -53,9 +53,8 @@ def initialize_database():
     conn.close()
 
 
-@app.before_first_request
-def ensure_database():
-    initialize_database()
+# Flask 3 removed before_first_request, so initialize database at startup.
+initialize_database()
 
 
 def classify_news(text):
@@ -75,7 +74,19 @@ def classify_news(text):
         "alert",
         "exclusive",
         "outrage",
-        "you won't believe"
+        "you won't believe",
+        "you won't believe",
+        "must read",
+        "guaranteed",
+        "miracle",
+        "sensational",
+        "truth",
+        "believe me",
+        "what happened next",
+        "hacked",
+        "exposed",
+        "celebrity gossip",
+        "big secret"
     ]
 
     real_keywords = [
@@ -91,29 +102,86 @@ def classify_news(text):
         "statement",
         "confirmation",
         "facts",
-        "sources"
+        "sources",
+        "statement",
+        "confirmed",
+        "released",
+        "announced",
+        "according to",
+        "researchers",
+        "experts",
+        "study shows",
+        "survey shows",
+        "press release",
+        "cricket",
+        "player",
+        "football",
+        "economy",
+        "education",
+        "health",
+        "science",
+        "officially",
+        "document",
+        "published",
+        "data shows",
+        "statistics"
+    ]
+
+    neutral_phrases = [
+        "is the",
+        "is a",
+        "is an",
+        "was the",
+        "was a",
+        "played",
+        "plays",
+        "has been",
+        "has",
+        "was",
+        "is"
     ]
 
     fake_score = sum(1 for keyword in fake_keywords if keyword in lower_text)
     real_score = sum(1 for keyword in real_keywords if keyword in lower_text)
-    matched_keywords = [keyword for keyword in fake_keywords + real_keywords if keyword in lower_text]
+    exclaim_score = lower_text.count("!") + lower_text.count("??")
+    question_score = lower_text.count("?")
+    capital_score = sum(1 for word in text.split() if word.isupper() and len(word) > 2)
+    source_score = sum(1 for phrase in ["according to", "reported by", "official statement", "study shows", "survey shows"] if phrase in lower_text)
+    number_score = 1 if any(char.isdigit() for char in lower_text) else 0
+    mention_score = sum(1 for phrase in neutral_phrases if phrase in lower_text)
 
-    if fake_score > real_score:
+    matched_keywords = [keyword for keyword in fake_keywords + real_keywords if keyword in lower_text]
+    matched_keywords = list(dict.fromkeys(matched_keywords))
+
+    # Apply additional weighting for stronger signals.
+    weighted_fake = fake_score * 2 + exclaim_score + capital_score
+    weighted_real = real_score * 2 + source_score + number_score
+
+    if weighted_fake >= weighted_real + 2:
         result = "FAKE NEWS"
-        confidence = f"{random.randint(75, 95)}%"
-        reason = "The text includes more sensational or misleading language than reliable cues."
-    elif real_score > fake_score:
+        confidence = min(98, 70 + weighted_fake * 3)
+        reason = "The text contains sensational or clickbait language and few trustworthy signals."
+    elif weighted_real >= weighted_fake + 1:
         result = "REAL NEWS"
-        confidence = f"{random.randint(70, 92)}%"
-        reason = "The text includes more trusted informational cues than sensational phrasing."
+        confidence = min(97, 55 + weighted_real * 4)
+        reason = "The text includes reliable cues such as official, verified, or factual language."
     else:
-        result = "UNCERTAIN"
-        confidence = f"{random.randint(55, 75)}%"
-        reason = "The algorithm could not confidently decide based on keyword signals alone."
+        if real_score > fake_score or source_score > 0:
+            result = "REAL NEWS"
+            confidence = min(85, 60 + (real_score + source_score) * 6)
+            reason = "The text has some factual traits, but the model remains cautious because the signals are not strong enough."
+        elif fake_score > real_score:
+            result = "FAKE NEWS"
+            confidence = min(75, 55 + fake_score * 8)
+            reason = "The text contains weak fake-news signals but not enough evidence for a strong conclusion."
+        else:
+            result = "UNCERTAIN"
+            confidence = min(80, 55 + mention_score * 4)
+            reason = "The model could not confidently decide because the text is mostly neutral and lacks strong indicators."
 
     return {
         "result": result,
-        "confidence": confidence,
+        "confidence": f"{confidence}%",
         "reason": reason,
         "matched_keywords": matched_keywords,
     }
